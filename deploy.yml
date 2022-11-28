@@ -1,0 +1,24 @@
+---
+
+- name: Lancement conteneur Apache
+  hosts: prod
+  become: true
+  
+  pre_tasks:
+    - name: Recuperation pip
+      get_url:
+        url: https://bootstrap.pypa.io/pip/2.7/get-pip.py
+        dest: /tmp/get-pip.py
+    - name: install pip
+      command: python2.7 /tmp/get-pip.py
+    - name: Install docker-python
+      ansible.builtin.pip:
+        name: docker-py
+  
+  tasks:
+    - name: Creation du conteneur
+      community.docker.docker_container:
+        name: apache_container
+        image: httpd
+        ports:
+          - "80:80"
